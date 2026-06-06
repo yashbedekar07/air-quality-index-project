@@ -1,184 +1,73 @@
-# DataAnalytics-Project-120B
+# Air Quality Index (AQI) Analysis — India, 2015–2020
 
-# 🌬️ Air Quality Index Analysis — DA 120B
+A data-analytics project exploring how air quality varies across major Indian cities, what drives it, and how often air becomes unhealthy. The analysis covers daily AQI readings and six core pollutants for 26 cities, with a Jupyter notebook for the full workflow and a slide deck summarising the findings.
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)
-![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Course](https://img.shields.io/badge/Course-DA%20120B-purple)
+## Research questions
 
-> A comprehensive data analytics project analyzing Air Quality Index (AQI) trends, pollutant relationships, and hazardous conditions across multiple locations and time periods.
+1. **Temporal trends** — How does AQI change over time? Are there clear daily, monthly, or seasonal patterns?
+2. **Pollutant relationships** — Is there a relationship between PM2.5, PM10, NO₂, SO₂, CO, O₃ and the overall AQI category?
+3. **Unhealthy conditions** — How often does air reach unhealthy or hazardous levels, and which cities are most affected?
 
----
+## Dataset
 
-## 📌 Project Overview
+The project uses the **"Air Quality Data in India (2015–2020)"** dataset, compiled from India's **Central Pollution Control Board (CPCB)** and published openly on Kaggle. The file analysed here (`city_day.csv`) was obtained from a public GitHub mirror of the same dataset — identical data, openly accessible without an account.
 
-This project examines AQI data to uncover temporal patterns, pollutant correlations, and high-risk locations. The analysis covers major pollutants including **PM2.5**, **PM10**, **NO2**, **SO2**, **CO**, and **O3**, and applies data analytics techniques to produce actionable environmental insights.
+- **Records:** 29,531 daily observations
+- **Cities:** 26
+- **Period:** 1 January 2015 – 1 July 2020
+- **Columns:** `City`, `Date`, `PM2.5`, `PM10`, `NO`, `NO2`, `NOx`, `NH3`, `CO`, `SO2`, `O3`, `Benzene`, `Toluene`, `Xylene`, `AQI`, `AQI_Bucket`
+- **AQI categories (CPCB):** Good · Satisfactory · Moderate · Poor · Very Poor · Severe
 
----
+The data is real monitoring output, so pollutant columns contain genuine missing values that are handled during cleaning. Note: the Kaggle version is a community-curated compilation of the official CPCB readings rather than an official CPCB release file.
 
-## ❓ Research Questions
-
-| # | Question |
-|---|----------|
-| 1 | How does AQI change over time — are there daily, monthly, or seasonal patterns? |
-| 2 | Is there a relationship between specific pollutants (PM2.5, PM10, NO2, SO2, CO, O3) and the overall AQI category? |
-| 3 | How often does air quality reach unhealthy or hazardous levels, and which locations are most affected? |
-
----
-
-## 🗂️ Repository Structure
+## Repository structure
 
 ```
-air-quality-project/
-│
-├── data/
-│   ├── raw/                    # Original, unmodified AQI datasets
-│   └── processed/              # Cleaned and transformed data files
-│
-├── notebooks/
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_data_cleaning.ipynb
-│   ├── 03_eda_temporal.ipynb
-│   ├── 04_pollutant_correlation.ipynb
-│   └── 05_hazardous_analysis.ipynb
-│
-├── scripts/
-│   ├── data_prep/
-│   │   ├── load_data.py
-│   │   └── clean_data.py
-│   ├── analysis/
-│   │   ├── temporal_analysis.py
-│   │   ├── correlation_analysis.py
-│   │   └── location_analysis.py
-│   └── visualization/
-│       ├── plot_aqi_trends.py
-│       ├── plot_heatmaps.py
-│       └── plot_pollutants.py
-│
-├── reports/
-│   ├── figures/                # All generated charts and plots
-│   ├── tables/                 # Summary tables and statistics
-│   └── final_report.pdf
-│
-├── docs/
-│   └── data_dictionary.md      # Variable definitions and AQI category thresholds
-│
-├── requirements.txt
-├── .gitignore
-└── README.md
+aqi-analysis/
+├── README.md
+├── AQI_Analysis.ipynb              # Full analysis notebook (data prep, EDA, findings)
+├── AQI_Analysis_Presentation.pptx  # 12-slide summary deck
+└── data/
+    └── city_day.csv                # The dataset
 ```
 
----
+## What the notebook does
 
-## 📊 Dataset Description
+1. **Load & clean** — reads the data, profiles missing values, drops rows without an AQI value, and sets aside trace columns.
+2. **Feature engineering** — derives Year, Month, Season, and Day-of-Week; applies the CPCB category ordering; and flags "unhealthy" days as AQI > 200.
+3. **RQ1 — Temporal** — monthly/seasonal trends, calendar-month cycle, and day-of-week comparison.
+4. **RQ2 — Pollutants** — correlation heatmap and pollutant concentrations broken down by AQI category.
+5. **RQ3 — Unhealthy** — ranking of cities by share of unhealthy days, plus a city × month heatmap of exposure.
+6. **Findings** — a written summary with a data-quality caveat.
 
-The dataset contains historical AQI measurements across multiple geographic locations, with the following key variables:
+## Key findings
 
-| Column | Description |
-|--------|-------------|
-| `Date` | Measurement date (YYYY-MM-DD) |
-| `Location` | City or monitoring station name |
-| `AQI` | Composite Air Quality Index score |
-| `AQI_Category` | Good / Moderate / Unhealthy / Hazardous |
-| `PM2.5` | Fine particulate matter (µg/m³) |
-| `PM10` | Coarse particulate matter (µg/m³) |
-| `NO2` | Nitrogen dioxide (ppb) |
-| `SO2` | Sulfur dioxide (ppb) |
-| `CO` | Carbon monoxide (ppm) |
-| `O3` | Ozone (ppb) |
+- **Air quality is strongly seasonal.** Average AQI peaks in winter (~221) and post-monsoon (~215), and is lowest during the monsoon (~116) when rain clears particulates. Day of week barely matters.
+- **Particulate matter drives the index.** PM10 correlates most strongly with AQI (0.80), followed by CO and PM2.5 (~0.67); ozone is only weakly related (0.20). Pollutant levels rise step-by-step across the Good → Severe categories.
+- **About 26% of all city-days are unhealthy** (AQI > 200), concentrated in northern cities. Ahmedabad (~82% of days) and Delhi (~65%) are worst hit, while coastal and southern cities such as Mumbai, Chennai, and Bengaluru stay below ~7%.
+- **Data-quality note:** Ahmedabad shows some implausible AQI values (max ≈ 2049, well above the CPCB ceiling of 500), pointing to sensor/data-quality issues rather than real readings.
 
-### AQI Category Thresholds
+## How to run
 
-| AQI Range | Category | Color Code |
-|-----------|----------|------------|
-| 0–50 | Good | 🟢 Green |
-| 51–100 | Moderate | 🟡 Yellow |
-| 101–150 | Unhealthy for Sensitive Groups | 🟠 Orange |
-| 151–200 | Unhealthy | 🔴 Red |
-| 201–300 | Very Unhealthy | 🟣 Purple |
-| 301+ | Hazardous | 🟤 Maroon |
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/<your-username>/aqi-analysis.git
+   cd aqi-analysis
+   ```
+2. Install dependencies:
+   ```bash
+   pip install pandas numpy matplotlib seaborn jupyter
+   ```
+3. Launch the notebook:
+   ```bash
+   jupyter notebook AQI_Analysis.ipynb
+   ```
+   Run the cells top to bottom. Figures are generated inline and the notebook reads the data from `data/city_day.csv`.
 
----
+## Tech stack
 
-## 🔧 Setup & Installation
+Python · pandas · NumPy · matplotlib · seaborn · Jupyter
 
-### Prerequisites
-- Python 3.9+
-- pip or conda
+## Data source & attribution
 
-### Install Dependencies
-
-```bash
-git clone https://github.com/your-username/air-quality-project.git
-cd air-quality-project
-pip install -r requirements.txt
-```
-
-### Run Notebooks
-
-```bash
-jupyter notebook notebooks/
-```
-
----
-
-## 📦 Requirements
-
-```
-pandas>=1.5.0
-numpy>=1.23.0
-matplotlib>=3.6.0
-seaborn>=0.12.0
-scikit-learn>=1.1.0
-jupyter>=1.0.0
-scipy>=1.9.0
-plotly>=5.11.0
-```
-
----
-
-## 📈 Key Analyses
-
-### 1. Temporal AQI Trends
-- Daily AQI time series plots
-- Monthly averages and rolling means
-- Seasonal decomposition (STL / moving averages)
-
-### 2. Pollutant Correlation
-- Pearson and Spearman correlation matrices
-- Scatter plots of PM2.5 / PM10 vs AQI
-- Feature importance ranking
-
-### 3. Hazardous Location Analysis
-- Frequency of Unhealthy/Hazardous days by city
-- Heatmaps of AQI categories over time
-- Top 5 most polluted locations
-
----
-
-## 📋 Methodology
-
-```
-1. Data Collection  →  2. Data Cleaning  →  3. EDA  →  4. Analysis  →  5. Visualization  →  6. Reporting
-```
-
-1. **Data Collection** — Load raw AQI dataset from CSV/API
-2. **Data Cleaning** — Handle missing values, outliers, and format dates
-3. **Exploratory Data Analysis** — Descriptive statistics, distributions
-4. **Analysis** — Temporal trends, correlations, and location-based patterns
-5. **Visualization** — Charts, heatmaps, and interactive plots
-6. **Reporting** — Summary findings and recommendations
-
----
-
-## 👤 Author
-
-**Data Analytics Student — DA 120B**  
-Course Project | Semester Analysis  
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License. See `LICENSE` for details.
+Central Pollution Control Board (CPCB), via the Kaggle dataset *"Air Quality Data in India (2015–2020)."* Used here for educational, non-commercial analysis.
