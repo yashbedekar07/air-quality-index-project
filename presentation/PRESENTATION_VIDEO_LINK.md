@@ -1,1 +1,10 @@
+# Presentation Video
+
+> ⚠️ **Known issue:** the link below is a Microsoft Teams meeting-recap URL scoped to the
+> `bitsiserlohn-my.sharepoint.com` tenant. It requires sign-in with an account from that
+> organisation and will not open for an external viewer (e.g. a grader without BITS Iserlohn
+> SSO access). **Before final submission, replace it with a public link** — e.g. re-upload the
+> recording to YouTube (unlisted) or a public OneDrive/Google Drive share — and remove this
+> notice once fixed.
+
 https://teams.microsoft.com/l/meetingrecap?driveId=b%21bj9Xbg8FfUqPkkLIVbFwpfmLR4gWTCJMtmoWiDFkDtsZuAiWkaBcSJ_xOFXyVxr2&driveItemId=01FNUO3H2NU4NBIHT4PZA25YBYPT5LVMLQ&sitePath=https%3A%2F%2Fbitsiserlohn-my.sharepoint.com%2F%3Av%3A%2Fg%2Fpersonal%2Fsurya_palla_ue-germany_de%2FIQBNpxoUHnx-Qa7gOHz6urFwAaY4qfjQdld0EqlTEbJvNHQ&fileUrl=https%3A%2F%2Fbitsiserlohn-my.sharepoint.com%2Fpersonal%2Fsurya_palla_ue-germany_de%2FDocuments%2FAufnahmen%2FData+Analytics-20260711_155020-Meeting+Recording.mp4%3Fweb%3D1&iCalUid=040000008200e00074c5b7101a82e00800000000926fdf633b11dd01000000000000000010000000c33f7faac3a193428522e14878e4fb60&threadId=19%3Ameeting_YmNjYWVkOGEtMjczNi00MjU3LThjOGMtNjdmY2Y0MmZiOWM2%40thread.v2&organizerId=e9c28352-9bf0-45c2-a10c-cdcd715192c6&tenantId=b4b62109-b5e5-499a-a5da-97f68d962343&callId=225a9642-23ba-4285-9236-00381a3edabe&threadType=Meeting&meetingType=Scheduled&subType=RecapSharingLink_RecapCore

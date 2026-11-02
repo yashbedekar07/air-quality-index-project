@@ -1,0 +1,7 @@
+Pollutant,Correlation_with_AQI,Strength
+PM10,0.80,Very Strong
+CO,0.69,Strong
+PM2.5,0.67,Strong
+NO2,0.53,Moderate
+SO2,0.38,Moderate
+O3,0.20,Weak

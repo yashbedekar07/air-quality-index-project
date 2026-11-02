@@ -1,0 +1,7 @@
+SortOrder,Category,Count,Percentage,Unhealthy
+1,Good,1341,5.4,No
+2,Satisfactory,8224,33.1,No
+3,Moderate,8829,35.5,No
+4,Poor,2781,11.2,Yes
+5,Very Poor,2337,9.4,Yes
+6,Severe,1338,5.4,Yes

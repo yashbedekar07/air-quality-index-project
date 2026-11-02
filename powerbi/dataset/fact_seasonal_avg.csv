@@ -1,0 +1,5 @@
+SortOrder,Season,Months,Avg_AQI_Capped,Primary_Driver
+1,Winter,"Dec, Jan, Feb",221,Temperature inversions trapping particulates
+2,Post-Monsoon,"Oct, Nov",215,Stubble burning; Diwali fireworks
+3,Summer,"Mar, Apr, May",158,Dry but windy conditions
+4,Monsoon,"Jun, Jul, Aug, Sep",116,Rainfall washing out particulates
