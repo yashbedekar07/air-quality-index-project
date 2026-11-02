@@ -1,0 +1,86 @@
+table fact_pollutant_stats
+	lineageTag: b9333dbb-3464-42f5-9c7c-ed31a64e3bda
+
+	column Pollutant
+		dataType: string
+		lineageTag: dd309f1c-9d64-4a75-8eb9-3f5c4246ef80
+		summarizeBy: none
+		sourceColumn: Pollutant
+
+		annotation SummarizationSetBy = Automatic
+
+	column Count
+		dataType: int64
+		lineageTag: 905de8eb-27b1-443f-a738-e4d7f90a9ee3
+		summarizeBy: sum
+		sourceColumn: Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mean
+		dataType: double
+		lineageTag: 9419e626-3b80-43f8-85a8-79d8b11aea02
+		summarizeBy: none
+		sourceColumn: Mean
+
+		annotation SummarizationSetBy = Automatic
+
+	column Std
+		dataType: double
+		lineageTag: a475bfb2-0ffd-4126-9852-fb8a9be45916
+		summarizeBy: none
+		sourceColumn: Std
+
+		annotation SummarizationSetBy = Automatic
+
+	column Min
+		dataType: int64
+		lineageTag: a905ebd8-741a-4a30-aa4a-9361d3aef25c
+		summarizeBy: none
+		sourceColumn: Min
+
+		annotation SummarizationSetBy = Automatic
+
+	column P25
+		dataType: double
+		lineageTag: eef86f06-4bf2-40c4-a48b-e252dcfeba9b
+		summarizeBy: none
+		sourceColumn: P25
+
+		annotation SummarizationSetBy = Automatic
+
+	column Median
+		dataType: double
+		lineageTag: fe04f842-77ee-44b6-804a-bacc7ef5c94d
+		summarizeBy: none
+		sourceColumn: Median
+
+		annotation SummarizationSetBy = Automatic
+
+	column P75
+		dataType: double
+		lineageTag: 13250c6a-2e58-4010-aeb2-1b19f968f018
+		summarizeBy: none
+		sourceColumn: P75
+
+		annotation SummarizationSetBy = Automatic
+
+	column Max
+		dataType: double
+		lineageTag: 6cb5c96f-6f02-4ed7-b03f-b38769dc672b
+		summarizeBy: none
+		sourceColumn: Max
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_pollutant_stats = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Project\Air Quality Index (AQI) Analysis\air-quality-index-project\powerbi\dataset\fact_pollutant_stats.csv"),[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Pollutant", type text},{"Count", Int64.Type},{"Mean", type number},{"Std", type number},{"Min", Int64.Type},{"P25", type number},{"Median", type number},{"P75", type number},{"Max", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

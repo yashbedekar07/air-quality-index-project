@@ -1,0 +1,94 @@
+table dim_city_stats
+	lineageTag: ac620743-6f4d-4fcd-a5eb-5a6796ae95f0
+
+	column City
+		dataType: string
+		lineageTag: f1869377-228f-4e44-8708-a3a06697e9cf
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 49488800-1d2d-4d76-ba6c-fc2454b59668
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Latitude
+		dataType: double
+		lineageTag: 8eab8b83-d75d-47d0-afa4-e6bfe177e61c
+		summarizeBy: none
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = Automatic
+
+	column Longitude
+		dataType: double
+		lineageTag: e8b7e55c-c4a8-4117-967d-15f6ba4e2d24
+		summarizeBy: none
+		sourceColumn: Longitude
+
+		annotation SummarizationSetBy = Automatic
+
+	column Days
+		dataType: int64
+		lineageTag: 7e841983-410b-4a25-8a26-881518309677
+		summarizeBy: sum
+		sourceColumn: Days
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mean_AQI
+		dataType: double
+		lineageTag: fe25731e-0851-4caa-ac76-dac6800b44dd
+		summarizeBy: none
+		sourceColumn: Mean_AQI
+
+		annotation SummarizationSetBy = Automatic
+
+	column Median_AQI
+		dataType: double
+		lineageTag: d5846d40-c805-4f1b-9b75-048133ace043
+		summarizeBy: none
+		sourceColumn: Median_AQI
+
+		annotation SummarizationSetBy = Automatic
+
+	column Std_AQI
+		dataType: double
+		lineageTag: c479c33a-32af-47fa-9411-ca3920fce608
+		summarizeBy: none
+		sourceColumn: Std_AQI
+
+		annotation SummarizationSetBy = Automatic
+
+	column Max_AQI_Raw
+		dataType: int64
+		lineageTag: 7bd33014-503f-4e43-9dfe-5764518c3885
+		summarizeBy: none
+		sourceColumn: Max_AQI_Raw
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unhealthy_Pct
+		dataType: double
+		lineageTag: 7fa3dc8b-1181-4673-be23-360409175cde
+		summarizeBy: none
+		sourceColumn: Unhealthy_Pct
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_city_stats = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Project\Air Quality Index (AQI) Analysis\air-quality-index-project\powerbi\dataset\dim_city_stats.csv"),[Delimiter=",", Columns=10, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"City", type text},{"Region", type text},{"Latitude", type number},{"Longitude", type number},{"Days", Int64.Type},{"Mean_AQI", type number},{"Median_AQI", type number},{"Std_AQI", type number},{"Max_AQI_Raw", Int64.Type},{"Unhealthy_Pct", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

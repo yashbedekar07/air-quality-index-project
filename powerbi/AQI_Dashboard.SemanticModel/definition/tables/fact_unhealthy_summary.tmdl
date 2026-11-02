@@ -1,0 +1,70 @@
+table fact_unhealthy_summary
+	lineageTag: 33160fe9-24cb-4872-a0d8-1f17a215b700
+
+	column City
+		dataType: string
+		lineageTag: 35c3199e-fce5-4a37-806b-56288912ab5f
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column Total_Days
+		dataType: int64
+		lineageTag: 3bab4f1b-8a7c-4e00-8b28-e52c8e73f171
+		summarizeBy: sum
+		sourceColumn: Total_Days
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mean_AQI
+		dataType: double
+		lineageTag: 1414070b-6707-44af-9227-c33cb0ae32fd
+		summarizeBy: none
+		sourceColumn: Mean_AQI
+
+		annotation SummarizationSetBy = Automatic
+
+	column Median_AQI
+		dataType: double
+		lineageTag: 827598d7-2802-4339-bdf4-f0a099c16243
+		summarizeBy: none
+		sourceColumn: Median_AQI
+
+		annotation SummarizationSetBy = Automatic
+
+	column Max_AQI_Raw
+		dataType: int64
+		lineageTag: eb202029-3d9b-4728-85db-cb65fb7f3a7a
+		summarizeBy: none
+		sourceColumn: Max_AQI_Raw
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unhealthy_Days
+		dataType: int64
+		lineageTag: 1a278981-7096-4c16-bb50-b99dd8912ca0
+		summarizeBy: sum
+		sourceColumn: Unhealthy_Days
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unhealthy_Pct
+		dataType: double
+		lineageTag: 32f648ae-8710-4650-8a3b-bd44b56ef73a
+		summarizeBy: none
+		sourceColumn: Unhealthy_Pct
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_unhealthy_summary = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Project\Air Quality Index (AQI) Analysis\air-quality-index-project\powerbi\dataset\fact_unhealthy_summary.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"City", type text},{"Total_Days", Int64.Type},{"Mean_AQI", type number},{"Median_AQI", type number},{"Max_AQI_Raw", Int64.Type},{"Unhealthy_Days", Int64.Type},{"Unhealthy_Pct", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

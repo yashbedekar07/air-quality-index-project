@@ -1,0 +1,38 @@
+table fact_missing_values
+	lineageTag: 27766725-c826-4ec3-bed1-002c75bd0544
+
+	column Column
+		dataType: string
+		lineageTag: 63fa14e0-0936-45fd-bc10-f0dfebb79dc8
+		summarizeBy: none
+		sourceColumn: Column
+
+		annotation SummarizationSetBy = Automatic
+
+	column Missing_Count
+		dataType: int64
+		lineageTag: 8f83b451-a968-469c-84cc-b59bd3388966
+		summarizeBy: sum
+		sourceColumn: Missing_Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column Missing_Pct
+		dataType: double
+		lineageTag: 87805828-1264-4912-80e7-4cbf4eb4d65b
+		summarizeBy: none
+		sourceColumn: Missing_Pct
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_missing_values = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Project\Air Quality Index (AQI) Analysis\air-quality-index-project\powerbi\dataset\fact_missing_values.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Column", type text},{"Missing_Count", Int64.Type},{"Missing_Pct", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

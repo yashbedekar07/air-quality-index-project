@@ -1,0 +1,38 @@
+table fact_yearly_aqi
+	lineageTag: fe7fcfbf-b89c-45bc-93b1-d7b4ee8d8865
+
+	column Year
+		dataType: int64
+		lineageTag: 0243a314-0b61-4631-b92e-1dc14d2a9094
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 2de5d0b7-1035-46c4-843a-9255e98fcbe9
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mean_AQI_Capped
+		dataType: double
+		lineageTag: 5ded09fa-12d7-48e1-a413-e10f6d0d56fe
+		summarizeBy: none
+		sourceColumn: Mean_AQI_Capped
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_yearly_aqi = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Project\Air Quality Index (AQI) Analysis\air-quality-index-project\powerbi\dataset\fact_yearly_aqi.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Year", Int64.Type},{"City", type text},{"Mean_AQI_Capped", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

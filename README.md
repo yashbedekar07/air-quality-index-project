@@ -157,8 +157,11 @@ air-quality-index-project/
 │   └── table_07_unhealthy_summary.csv
 │
 ├── 📂 powerbi/                          # Interactive dashboard companion
-│   ├── README.md                       # Data model, DAX measures, build steps
-│   └── dataset/                        # 10 ready-to-import CSVs (see powerbi/README.md)
+│   ├── AQI_Dashboard.pbip              # open this in Power BI Desktop
+│   ├── AQI_Dashboard.Report/           # PBIR report definition (4 pages)
+│   ├── AQI_Dashboard.SemanticModel/    # TMDL model (tables, relationships, measures)
+│   ├── README.md                       # what's built, what's left, DAX/page spec
+│   └── dataset/                        # 10 CSVs the model loads from
 │
 ├── 📂 reports/
 │   ├── AQI_Analysis_Report.md          # Full project report (Markdown)
@@ -190,20 +193,23 @@ air-quality-index-project/
 
 ## 📊 Power BI Dashboard
 
-An interactive companion to the static notebook charts lives in [`powerbi/`](powerbi). It ships
-a 10-table, ready-to-import dataset (derived from the notebook's own verified tables and report
-figures — no new data sourced from outside this project) plus a full build spec:
+An interactive companion to the static notebook charts lives in [`powerbi/`](powerbi) as a real
+**Power BI Project (`.pbip`)** — open [`powerbi/AQI_Dashboard.pbip`](powerbi/AQI_Dashboard.pbip)
+in Power BI Desktop and the data model loads automatically:
 
-- **[`powerbi/dataset/`](powerbi/dataset)** — `dim_city_stats.csv` (26 cities, enriched with
-  region + coordinates for a map visual) and 9 `fact_*.csv` tables covering yearly trends, AQI
-  category mix, the COVID-19 lockdown comparison, day-of-week/seasonal averages, pollutant
-  correlations, and data-quality metrics.
-- **[`powerbi/README.md`](powerbi/README.md)** — table-by-table data lineage, the model
-  relationships to set up, suggested DAX measures, and a 4-page report layout (Overview ·
-  Temporal RQ1 · Pollutants RQ2 · City Exposure RQ3).
+- **10 tables** loaded from [`powerbi/dataset/`](powerbi/dataset) (derived entirely from the
+  notebook's own verified tables and report figures — no data from outside this project),
+  including `dim_city_stats` (26 cities, enriched with region + coordinates for a map visual)
+  and 9 `fact_*` tables covering yearly trends, AQI category mix, the COVID-19 lockdown
+  comparison, day-of-week/seasonal averages, pollutant correlations, and data-quality metrics
+- **3 relationships** and **6 DAX measures** already wired up
+- **4 named report pages** (Overview · Temporal RQ1 · Pollutants RQ2 · City Exposure RQ3), ready
+  for visuals
 
-Power BI Desktop is required to open/build the `.pbix` (not committed — see the guide for why);
-following the build steps takes about 10–15 minutes.
+This was generated as a PBIP (Power BI's open, text-based project format — TMDL model + PBIR
+report) and verified by actually opening it in Power BI Desktop before committing. See
+[`powerbi/README.md`](powerbi/README.md) for what's already built vs. the ~10 minutes of
+drag-and-drop still needed to add the charts themselves, plus the suggested layout for each page.
 
 ---
 
@@ -294,9 +300,10 @@ and generates `AQI_Analysis_Outputs.zip` in the final cell.
 
 ### Option C — Power BI Dashboard
 
-No Python needed — see [`powerbi/README.md`](powerbi/README.md) for the full build guide
-(import the CSVs in `powerbi/dataset/`, wire up the relationships, add the DAX measures, build
-the 4 report pages). Takes about 10–15 minutes in Power BI Desktop.
+No Python needed — open [`powerbi/AQI_Dashboard.pbip`](powerbi/AQI_Dashboard.pbip) directly in
+Power BI Desktop. The data model (tables, relationships, measures) loads automatically; see
+[`powerbi/README.md`](powerbi/README.md) for the ~10 minutes of drag-and-drop needed to add the
+chart visuals to the 4 pre-built pages.
 
 ---
 
@@ -333,7 +340,7 @@ pip install -r requirements.txt
 ## 🐞 Known Issues
 
 - **Presentation video link requires organisational sign-in.** [`presentation/PRESENTATION_VIDEO_LINK.md`](presentation/PRESENTATION_VIDEO_LINK.md) currently points to a Microsoft Teams meeting-recap URL scoped to the BITS Iserlohn tenant — it will not open for a viewer outside that organisation. **Action needed before final submission:** replace it with a public link (e.g. an unlisted YouTube upload or a public OneDrive/Drive share).
-- **Power BI `.pbix` is not pre-built.** The dataset and full build spec are ready in [`powerbi/`](powerbi), but the binary report file itself needs to be assembled once in Power BI Desktop (~10–15 min) — see [`powerbi/README.md`](powerbi/README.md).
+- **Power BI chart visuals aren't pre-built.** [`powerbi/AQI_Dashboard.pbip`](powerbi/AQI_Dashboard.pbip) has the full data model (tables, relationships, measures) and 4 named report pages wired up and verified to open cleanly, but the actual charts on those pages still need ~10 minutes of drag-and-drop in Power BI Desktop — see [`powerbi/README.md`](powerbi/README.md) for the exact spec per page.
 
 ---
 

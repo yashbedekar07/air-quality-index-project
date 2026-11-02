@@ -1,0 +1,32 @@
+table _Measures
+	lineageTag: 2cda11ff-bac1-472a-bcb9-a8a6a54554c3
+
+	measure 'Avg City AQI' = AVERAGE(dim_city_stats[Mean_AQI])
+		formatString: 0.0
+		lineageTag: caf27ea1-036c-439e-b66a-db709967fea5
+
+	measure 'Unhealthy City Count' = CALCULATE(COUNTROWS(dim_city_stats), dim_city_stats[Unhealthy_Pct] > 20)
+		formatString: 0
+		lineageTag: f256467a-42ed-4609-91da-7542ff385167
+
+	measure 'Total Bucket Days' = SUM(fact_bucket_distribution[Count])
+		formatString: #,0
+		lineageTag: cceea74d-9c13-4b82-9d85-f1ac149dabc4
+
+	measure 'Pct Unhealthy Days' = DIVIDE(CALCULATE(SUM(fact_bucket_distribution[Count]), fact_bucket_distribution[Unhealthy] = "Yes"), SUM(fact_bucket_distribution[Count]))
+		formatString: 0.0%
+		lineageTag: ef01b5ad-7feb-4da6-8684-ed7ebbd2c623
+
+	measure 'Avg Lockdown AQI Change' = AVERAGE(fact_covid_comparison[Change_Pct])
+		formatString: 0.0
+		lineageTag: 4b939271-4c30-4221-8535-f4f32d98d9cf
+
+	measure 'City Rank by Unhealthy Pct' = RANKX(ALL(dim_city_stats), dim_city_stats[Unhealthy_Pct], , DESC)
+		formatString: 0
+		lineageTag: 75ed3d79-8a24-4a2d-abad-ae786b61e9c2
+
+	partition _Measures = calculated
+		mode: import
+		source = {1}
+
+	annotation PBI_Id = 0d99bc78-6d21-4cb9-9495-d30f033f3d2f

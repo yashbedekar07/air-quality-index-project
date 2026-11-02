@@ -11,7 +11,11 @@ __pycache__/
 # Generated export bundle
 AQI_Analysis_Outputs.zip
 
-# Power BI cache (keep the .pbix itself if you want it versioned; this is just local cache)
+# Power BI project (PBIP) local-only files -- per Microsoft's standard PBIP .gitignore
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+**/.pbi/editorSettings.json
+**/.pbi/unappliedChanges.json
 powerbi/*.pbix.bak
 *.pbix.lock
 

@@ -1,0 +1,23 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["dim_city_stats", "fact_yearly_aqi", "fact_bucket_distribution", "fact_covid_comparison", "fact_unhealthy_summary", "fact_seasonal_avg", "fact_dayofweek", "fact_pollutant_correlation", "fact_missing_values", "fact_pollutant_stats", "_Measures"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+ref table dim_city_stats
+ref table fact_yearly_aqi
+ref table fact_bucket_distribution
+ref table fact_covid_comparison
+ref table fact_unhealthy_summary
+ref table fact_seasonal_avg
+ref table fact_dayofweek
+ref table fact_pollutant_correlation
+ref table fact_missing_values
+ref table fact_pollutant_stats
+ref table _Measures

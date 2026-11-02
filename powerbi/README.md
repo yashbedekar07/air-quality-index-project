@@ -1,8 +1,32 @@
-# Power BI Dashboard — Build Guide
+# Power BI Dashboard
 
-This folder contains everything needed to build an interactive Power BI companion to the
-Jupyter notebook analysis: a ready-to-import dataset and a step-by-step spec for the report
-pages, relationships, and DAX measures.
+This folder contains a working **Power BI Project (PBIP)** — `AQI_Dashboard.pbip` — plus the
+dataset it loads from. Double-click `AQI_Dashboard.pbip` to open it in Power BI Desktop: the
+data model (10 tables, 3 relationships, 6 DAX measures) loads automatically, and four named
+report pages (Overview · Temporal RQ1 · Pollutants RQ2 · City Exposure RQ3) are ready for you
+to drop visuals onto.
+
+> **Why a project file instead of a `.pbix`?** PBIP is Power BI's official, git-friendly
+> open format — the semantic model is plain-text TMDL and the report is plain-text JSON (PBIR),
+> both documented by Microsoft and designed to be authored outside the Power BI Desktop UI. That's
+> what makes it possible to generate the tables, relationships, and measures below programmatically
+> and have Power BI Desktop open them directly, instead of only being able to hand you a
+> build-it-yourself guide. See [Project structure](#2-project-structure) for what's in each file.
+
+## 1. What's already built vs. what's left
+
+| Done for you | Still needs you (in Power BI Desktop) |
+|---|---|
+| All 10 tables loaded from `dataset/*.csv` via Power Query | Drag fields onto the 4 blank pages to create the actual charts |
+| 3 relationships wired (`dim_city_stats[City]` → the 3 city-keyed fact tables) | Pick chart types / formatting (see §5 for the suggested spec) |
+| 6 DAX measures created in a `_Measures` table | Add slicers (Region, City) and sync them across pages |
+| 4 report pages created and named | Save (`Ctrl+S`) once you're happy — this writes back into these same files |
+
+Hand-authoring full chart visuals (exact field-well bindings, axis config) as raw JSON without
+being able to see the rendered result wasn't reliable enough to also script — so the pages are
+real but intentionally blank. Everything that *is* scripted (the model, relationships, measures)
+was validated by actually opening the project in Power BI Desktop (version 2.159.883.0) and
+confirming it loads without errors before this was committed.
 
 > **Why a separate dataset instead of the raw `city_day.csv`?** The raw CPCB file isn't
 > committed to this repo (29,531-row dataset, licensed separately on Kaggle — see
@@ -14,7 +38,18 @@ pages, relationships, and DAX measures.
 > granularity by re-running the notebook with extra `to_csv()` export lines — see
 > [Extending to row-level data](#extending-to-row-level-data) below.
 
-## 1. Dataset files
+## 2. Project structure
+
+```
+powerbi/
+├── AQI_Dashboard.pbip                  # open this in Power BI Desktop
+├── AQI_Dashboard.Report/               # PBIR report definition (4 pages, plain-text JSON)
+├── AQI_Dashboard.SemanticModel/        # TMDL semantic model (tables, relationships, measures)
+├── dataset/                            # the 10 CSVs the model loads from
+└── README.md                           # this file
+```
+
+### Dataset files
 
 | File | Grain | Source | Notes |
 |------|-------|--------|-------|
@@ -32,35 +67,41 @@ pages, relationships, and DAX measures.
 All values trace back to this project's own notebook outputs or report tables — nothing here
 is sourced from outside the project.
 
-## 2. Build steps (Power BI Desktop)
+## 3. Open it
 
-1. **Get data → Folder** (or **Text/CSV** ten times) → point at `powerbi/dataset/` → **Combine & Transform** isn't needed since these are separate tables, not one schema; load each CSV individually as its own table (uncheck "Combine files").
-2. In **Power Query Editor**, confirm data types: `Year` → Whole Number, all `*_AQI*` / `*_Pct*` / `Latitude` / `Longitude` → Decimal Number, `SortOrder` → Whole Number. Click **Close & Apply**.
-3. **Model view** — create these relationships (all one-to-many, single direction, from `dim_city_stats[City]`):
-   - `dim_city_stats[City]` → `fact_yearly_aqi[City]`
-   - `dim_city_stats[City]` → `fact_covid_comparison[City]`
-   - `dim_city_stats[City]` → `fact_unhealthy_summary[City]`
-   - The remaining fact tables (`fact_bucket_distribution`, `fact_seasonal_avg`, `fact_dayofweek`, `fact_pollutant_correlation`, `fact_missing_values`, `fact_pollutant_stats`) are global aggregates (all 26 cities combined) and have **no city key** — leave them unrelated; they feed their own standalone visuals/pages.
-4. Add the DAX measures from §3 below (**Modeling → New Measure**, on `dim_city_stats`).
-5. Build the four pages described in §4.
-6. **File → Save As** → `AQI_Dashboard.pbix` in this same `powerbi/` folder (the `.pbix` binary itself isn't committed to Git by default — see [`.gitignore`](../.gitignore) — commit it manually if you want it versioned, or publish to the Power BI Service and share that link in the README instead).
+1. Double-click `AQI_Dashboard.pbip`. Power BI Desktop opens with the title bar reading
+   "AQI_Dashboard" and the model already loaded (give it a few seconds to import the 10 CSVs on
+   first open).
+2. If a CSV path warning appears: the tables load via `File.Contents("D:\Project\Air Quality
+   Index (AQI) Analysis\air-quality-index-project\powerbi\dataset\...")` — an absolute path, since
+   that's portable for *this* machine but not if you move/clone the folder elsewhere. To repoint
+   it: **Transform data** → select each query → fix the path in the formula bar of its `Source`
+   step → **Close & Apply**.
+3. You'll land on the (currently blank) **Overview** page with 3 other pages in the pane on the
+   left. Build the visuals per §5 below, then save (`Ctrl+S`) — this writes straight back into
+   `AQI_Dashboard.Report/` and `AQI_Dashboard.SemanticModel/`, so `git diff` stays readable.
+4. Optional: **File → Save As → Power BI file (.pbix)** if you also want a single binary file to
+   share with someone who doesn't need the source project (not committed by default — see
+   [`.gitignore`](../.gitignore)).
 
-## 3. Suggested DAX measures
+## 4. DAX measures (already created, in the `_Measures` table)
 
 ```dax
-Avg City AQI          = AVERAGE(dim_city_stats[Mean_AQI])
-Unhealthy City Count   = CALCULATE(COUNTROWS(dim_city_stats), dim_city_stats[Unhealthy_Pct] > 20)
-Total Unhealthy Days % = DIVIDE(SUM(fact_bucket_distribution[Count]), 24850, 0) * 100  -- sanity check vs Table 05 total (should read 100%)
-Pct Unhealthy (filtered) =
+'Avg City AQI'                = AVERAGE(dim_city_stats[Mean_AQI])
+'Unhealthy City Count'         = CALCULATE(COUNTROWS(dim_city_stats), dim_city_stats[Unhealthy_Pct] > 20)
+'Total Bucket Days'            = SUM(fact_bucket_distribution[Count])
+'Pct Unhealthy Days' =
     DIVIDE(
         CALCULATE(SUM(fact_bucket_distribution[Count]), fact_bucket_distribution[Unhealthy] = "Yes"),
         SUM(fact_bucket_distribution[Count])
     )
-Lockdown AQI Change (avg) = AVERAGE(fact_covid_comparison[Change_Pct])
-City Rank by Unhealthy % = RANKX(ALL(dim_city_stats), dim_city_stats[Unhealthy_Pct], , DESC)
+'Avg Lockdown AQI Change'      = AVERAGE(fact_covid_comparison[Change_Pct])
+'City Rank by Unhealthy Pct'   = RANKX(ALL(dim_city_stats), dim_city_stats[Unhealthy_Pct], , DESC)
 ```
 
-## 4. Suggested report pages
+Find them in the Fields pane under the `_Measures` table — drag straight onto any visual.
+
+## 5. Suggested report pages (what to build on each blank page)
 
 | Page | Visuals |
 |------|---------|
@@ -72,7 +113,7 @@ City Rank by Unhealthy % = RANKX(ALL(dim_city_stats), dim_city_stats[Unhealthy_P
 Add a **Region** slicer and a **City** slicer (synced across pages 2–4) so a viewer can isolate
 the north–south divide the report describes.
 
-## 5. Extending to row-level data
+## 6. Extending to row-level data
 
 To rebuild these extracts (or go further — e.g. a date-level drill-through) from the full
 29,531-row dataset:

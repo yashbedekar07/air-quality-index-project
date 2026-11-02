@@ -1,0 +1,38 @@
+table fact_dayofweek
+	lineageTag: ae763faf-e806-454d-bbce-ffe1351ac6ba
+
+	column SortOrder
+		dataType: int64
+		lineageTag: b0d1a003-a847-44c2-815b-adfecdd8e71d
+		summarizeBy: none
+		sourceColumn: SortOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		dataType: string
+		lineageTag: 1c9b78f9-6fb6-43ca-8c6e-1e6d7ddd3361
+		summarizeBy: none
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+	column Avg_AQI_Capped
+		dataType: int64
+		lineageTag: 8c18afcf-8b19-4801-9a54-74f387760a83
+		summarizeBy: none
+		sourceColumn: Avg_AQI_Capped
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_dayofweek = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Project\Air Quality Index (AQI) Analysis\air-quality-index-project\powerbi\dataset\fact_dayofweek.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SortOrder", Int64.Type},{"Day", type text},{"Avg_AQI_Capped", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

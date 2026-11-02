@@ -1,0 +1,54 @@
+table fact_seasonal_avg
+	lineageTag: 20b956cb-0a09-413a-8a87-f8896a3df838
+
+	column SortOrder
+		dataType: int64
+		lineageTag: 5a7b3f9b-d275-4a78-ae4f-186354d75eec
+		summarizeBy: none
+		sourceColumn: SortOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	column Season
+		dataType: string
+		lineageTag: 8d5d308c-3576-4bf3-98ba-bfec64ae4d6d
+		summarizeBy: none
+		sourceColumn: Season
+
+		annotation SummarizationSetBy = Automatic
+
+	column Months
+		dataType: string
+		lineageTag: 81b36a2e-af7c-437b-a1bd-724c4066495f
+		summarizeBy: none
+		sourceColumn: Months
+
+		annotation SummarizationSetBy = Automatic
+
+	column Avg_AQI_Capped
+		dataType: int64
+		lineageTag: 4959f2a4-654a-4eb5-af18-80b58c76b3c5
+		summarizeBy: none
+		sourceColumn: Avg_AQI_Capped
+
+		annotation SummarizationSetBy = Automatic
+
+	column Primary_Driver
+		dataType: string
+		lineageTag: 5a541015-795f-4a2b-b09a-9bf350cbb2ec
+		summarizeBy: none
+		sourceColumn: Primary_Driver
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_seasonal_avg = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Project\Air Quality Index (AQI) Analysis\air-quality-index-project\powerbi\dataset\fact_seasonal_avg.csv"),[Delimiter=",", Columns=5, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SortOrder", Int64.Type},{"Season", type text},{"Months", type text},{"Avg_AQI_Capped", Int64.Type},{"Primary_Driver", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

@@ -1,0 +1,54 @@
+table fact_bucket_distribution
+	lineageTag: c4ec79fc-be0b-4cbe-9857-52acf8baf20b
+
+	column SortOrder
+		dataType: int64
+		lineageTag: 200d596c-10f6-4e9b-a2ca-e9c8439355fb
+		summarizeBy: none
+		sourceColumn: SortOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: 26a298cd-0899-4d35-ad0e-a763368b59ba
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column Count
+		dataType: int64
+		lineageTag: 095765da-86b2-4e69-9e97-0de247ea841a
+		summarizeBy: sum
+		sourceColumn: Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column Percentage
+		dataType: double
+		lineageTag: f6b7f89f-0562-470b-b730-4805d839c5bf
+		summarizeBy: none
+		sourceColumn: Percentage
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unhealthy
+		dataType: string
+		lineageTag: bfc7e470-2d2c-4ceb-8905-a65badd6d2bc
+		summarizeBy: none
+		sourceColumn: Unhealthy
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_bucket_distribution = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Project\Air Quality Index (AQI) Analysis\air-quality-index-project\powerbi\dataset\fact_bucket_distribution.csv"),[Delimiter=",", Columns=5, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SortOrder", Int64.Type},{"Category", type text},{"Count", Int64.Type},{"Percentage", type number},{"Unhealthy", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

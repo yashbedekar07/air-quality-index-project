@@ -1,0 +1,11 @@
+relationship eccfad89-8ed4-4954-8028-f563324f5bdf
+	fromColumn: fact_yearly_aqi.City
+	toColumn: dim_city_stats.City
+
+relationship 587f7dfc-09f9-49da-a5b2-c55359011bad
+	fromColumn: fact_covid_comparison.City
+	toColumn: dim_city_stats.City
+
+relationship 0b9a0937-2603-42ad-93e3-699791e4130d
+	fromColumn: fact_unhealthy_summary.City
+	toColumn: dim_city_stats.City
